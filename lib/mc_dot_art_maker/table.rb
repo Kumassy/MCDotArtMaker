@@ -5,45 +5,31 @@ module MCDotArtMaker
     attr_reader :width, :height, :cells
     include Enumerable
 
-    # def initialize(filename,size = DEFAULT_DOT_SIZE)
     def initialize(filename,dither_method = Magick::RiemersmaDitherMethod)
       # モザイクにしたい元画像をセット
       @image = Magick::ImageList.new(filename).first
       # - width - 絵の横方向の大きさ
       # - height - 絵の縦方向の大きさ
       # 端っこは切り捨てる
-      # - size - 1Cellあたりの元の絵のpixel数。大きい方があらいドット絵になる
-      # @width = @image.columns/size
-      # @height = @image.rows/size
       @width = @image.columns
       @height = @image.rows
-      # @size = size
-
       @cells = []
-
       @block_list = MCDotArtMaker::BlockList.instance
-      # puts "quantizing..."
-      # @image = @image.quantize(@block_list.size)
-      # puts "Done!"
+
       puts "remapping..."
       @image = @image.remap(@block_list.to_remap_image,dither_method)
       puts "Done!"
 
-      # puts "Making mosaic data..."
       puts "Registering cells..."
       (@width*@height).times do |i|
-        # x = (i % @width) * size #列番号・横方向: x
-        # y = (i / @width) * size #行番号・縦方向: y
         x = i % @width #列番号・横方向: x
         y = i / @width #行番号・縦方向: y
-        # @cells << Cell.new(*MCDotArtMaker.calc_average_color(@image.get_pixels(x,y,size,size)))
         @cells << Cell.new(@image,x,y)
       end
       puts "Done!"
 
 
       @schematic_helper = MCDotArtMaker::SchematicHelper.instance
-      # @schematic_helper.read 'mc_dot_art_maker/seed.schematic'
       @schematic_helper.read File.expand_path('../seed.schematic', __FILE__)
 
       @calculation_count = 0 # 近似ブロック計算が終わったらインクリメント

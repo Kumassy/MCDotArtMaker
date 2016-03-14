@@ -1,5 +1,4 @@
 module MCDotArtMaker
-  # TEXTURE_BASE_DIR = 'mc_dot_art_maker/textures/'.freeze
   class BlockList
     include Enumerable
     include Singleton
@@ -459,7 +458,6 @@ module MCDotArtMaker
     private
     def block(name, id_data_label, filename)
       # ブロックをリストに入れるためのヘルパーメソッド
-      # image = Magick::ImageList.new(TEXTURE_BASE_DIR + filename)
       image = Magick::ImageList.new(File.expand_path("../textures/#{filename}", __FILE__))
       r,g,b = MCDotArtMaker.calc_average_color(image.get_pixels(0,0,image.columns,image.rows))
       id = id_data_label.split(':')[0].to_i

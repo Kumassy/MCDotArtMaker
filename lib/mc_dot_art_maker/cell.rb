@@ -3,9 +3,6 @@ module MCDotArtMaker
   class Cell
     attr_reader :color
     attr_accessor :block
-    # def initialize(r,g,b)
-    #   @color = Color::RGB.new(r, g, b)
-    # end
     def initialize(image,x,y)
       pixel = image.pixel_color(x,y)
       r = pixel.red / 256

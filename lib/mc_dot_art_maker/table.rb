@@ -72,12 +72,11 @@ module MCDotArtMaker
     end
     def mosaic_image
       # モザイク化した画像を返す
-      calc_nearest_block unless calculation_done?
+      calculate
 
       new_image = Magick::Image.new(@width*TEXTURE_SIZE, @height*TEXTURE_SIZE){ self.background_color = "white" }
       each(TEXTURE_SIZE) do |c,x,y|
         idr = Magick::Draw.new
-        # idr.fill = c.to_rmagic_color
         idr.fill = c.block.to_rmagic_color
         idr.rectangle(x, y, x + TEXTURE_SIZE, y + TEXTURE_SIZE)
         idr.draw(new_image)
@@ -90,7 +89,7 @@ module MCDotArtMaker
 
     def texture_image
       # 近似ブロック色でのモザイク画像を返す
-      calc_nearest_block unless calculation_done?
+      calculate
 
       new_image = Magick::Image.new(@width*TEXTURE_SIZE, @height*TEXTURE_SIZE){ self.background_color = "white" }
       each(TEXTURE_SIZE) do |c,x,y|
@@ -119,20 +118,16 @@ module MCDotArtMaker
     private
     def calc_nearest_block
       puts "Calc nearest block...."
-
-      # Parallel.each_with_index(@cells, :in_processes=>4) do |cell,index|
       @nearest_color_cash ||= {}
+
       each_with_index do |cell,index|
         puts "Calculating #{index+1} of #{@cells.size}" if (index % 10000 == 0)|| (index == @cells.size)
         if @nearest_color_cash.include?(cell.color)
           cell.block = @nearest_color_cash[cell.color]
-          # puts "Cashe hit! #{cell.color}"
         else
-          # puts "New Color! #{cell.color}"
           comparitor = cell.comparitor
           block_distance_list = {}
           @block_list.each do |block|
-          # Parallel.each(@block_list, :in_processes=>4) do |block|
             block_distance_list[block] = comparitor.compare(block.color)
           end
           nearest_block = block_distance_list.min{ |x, y| x[1] <=> y[1] }[0]  #[0]: key   [1]: value

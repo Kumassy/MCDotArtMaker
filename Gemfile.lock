@@ -1,0 +1,19 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bindata (1.8.3)
+    color-rgb (0.0.2)
+    nbt_utils (0.0.4)
+      bindata (~> 1.3)
+    rmagick (2.15.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  color-rgb
+  nbt_utils
+  rmagick
+
+BUNDLED WITH
+   1.11.2

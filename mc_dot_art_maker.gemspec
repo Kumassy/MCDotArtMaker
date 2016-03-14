@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
 	s.summary = 'Dot Art Maker for Minecraft'
 	s.description = 'Converting images to mosaic arts using Minecraft textures and .schematic files.'
 	s.authors = ['Kumassy']
-	s.files = ['lib/mc_dot_art_maker.rb']
+	s.files = ['lib/mc_dot_art_maker.rb','lib/mc_dot_art_maker/']
 	s.homepage = 'https://github.com/Kumassy/MCDotArtMaker'
 
 	s.add_development_dependency 'bindata'

@@ -10,9 +10,9 @@
 /test/tmp/
 /test/version_tmp/
 /tmp/
-/example/make_dot_art/output/mosaic/
-/example/make_dot_art/output/schematic/
-/example/make_dot_art/output/texture/
+
+
+
 
 ## Specific to RubyMotion:
 .dat*

@@ -4,5 +4,5 @@ module MCDotArtMaker
     attr_reader :block_list
   end
 end
-table = MCDotArtMaker::Table.new("anzu.png")
+table = MCDotArtMaker::Table.new("test_image.jpg")
 table.block_list.to_remap_image.write("palette.png")

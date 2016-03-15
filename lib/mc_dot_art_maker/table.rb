@@ -7,7 +7,14 @@ module MCDotArtMaker
 
     def initialize(filename,dither_method = Magick::RiemersmaDitherMethod)
       # モザイクにしたい元画像をセット
-      @image = Magick::ImageList.new(filename).first
+
+      if filename.instance_of? String
+        @image = Magick::ImageList.new(filename).first
+      elsif filename.instance_of? Magick::Image
+        @image = filename
+      end
+
+        
       # - width - 絵の横方向の大きさ
       # - height - 絵の縦方向の大きさ
       # 端っこは切り捨てる

@@ -316,16 +316,16 @@ module MCDotArtMaker
       #
       # block :redstone_ore, '73', 'redstone_ore.png'
       #
-      # block :snow, '78', 'snow.png'
+          block :snow, '78', 'snow.png'
       block :ice, '79', 'ice.png'
       #
-      # block :clay, '82', 'clay.png'
+          block :clay, '82', 'clay.png'
       #
       # block :jukebox, '84', 'jukebox_top.png'
       #
       # block :pumpkin, '86', 'pumpkin_top.png'
       # block :netherrack, '87', 'netherrack.png'
-      # block :soul_sand, '88', 'soul_sand.png'
+          block :soul_sand, '88', 'soul_sand.png'
       block :glowstone, '89', 'glowstone.png'
       #
       # block :cake_block, '92', 'cake_top.png'
@@ -457,15 +457,15 @@ module MCDotArtMaker
 
     private
     def block(name, id_data_label, filename)
-      # ブロックをリストに入れるためのヘルパーメソッド
-      image = Magick::ImageList.new(File.expand_path("../textures/#{filename}", __FILE__))
-      r,g,b = MCDotArtMaker.calc_average_color(image.get_pixels(0,0,image.columns,image.rows))
+      # Add blocks to @blocks
+      image = Magick::ImageList.new(File.expand_path("../textures/#{filename}", __FILE__)).first
+      r,g,b = MCDotArtMaker.calc_average_color(image)
       id = id_data_label.split(':')[0].to_i
       data = id_data_label.split(':')[1].to_i
 
-      block = Block.new(name,id, data,r,g,b, image[0])
+      block = Block.new(name,id, data,r,g,b, image)
       @blocks << block
-      puts "Block #{name} registered. R:#{r} G:#{g} B:#{b}"
+      MCDotArtMaker.puts "Block #{name} registered. R:#{r} G:#{g} B:#{b}"
     end
   end
 end

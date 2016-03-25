@@ -1,25 +1,6 @@
-module Color
-  class RGB
-    def ==(other)
-      @r == other.r && @g == other.g && @b == other.b
-    end
-    def eql?(other)
-      @r.eql?(other.r) && @g.eql?(other.g) && @b.eql?(other.b)
-    end
-    def hash
-      code = 17
-      code = 37*code + @r.hash
-      code = 37*code + @g.hash
-      code = 37*code + @b.hash
-      code
-    end
-  end
-end
-
 module MCDotArtMaker
-  TEXTURE_SIZE = 16
   class Block
-    attr_reader :name,:id,:data,:texture,:color
+    attr_reader :name,:id,:data,:color
     # - name - ブロック名 e.g. :orange_wool
     # - id - id e.g. 35
     # - data - data e.g. 1
@@ -32,12 +13,19 @@ module MCDotArtMaker
       @color = Color::RGB.new(r, g, b)
       @texture = tx.resize(TEXTURE_SIZE,TEXTURE_SIZE)
     end
+    def texture(size=TEXTURE_SIZE)
+      if size != TEXTURE_SIZE
+        @texture.resize(size,size)
+      else
+        @texture
+      end
+    end
     def to_lab
       @color.to_lab
     end
     def to_rmagic_color
       # p "calc color :#{@color.r} #{@color.g} #{@color.b}"
-      Magick::Pixel.new(@color.r*256, @color.g*256, @color.b*256)
+      Magick::Pixel.new(@color.r*257, @color.g*257, @color.b*257)
     end
 
     def hash

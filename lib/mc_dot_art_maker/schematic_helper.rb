@@ -1,32 +1,3 @@
-# NBTUtilsを開いてデータ書き換えのためのメソッドを定義する
-module NBTUtils
-  module Tag
-    class ByteArray
-      def payload=(new_value)
-        @payload = ::BinData::String.new(new_value)
-      end
-    end
-  end
-end
-module NBTUtils
-  module Tag
-    class Int
-      def payload=(new_value)
-        @payload = ::BinData::Int32be.new(new_value)
-      end
-    end
-  end
-end
-module NBTUtils
-  module Tag
-    class Short
-      def payload=(new_value)
-        @payload = ::BinData::Int16be.new(new_value)
-      end
-    end
-  end
-end
-
 module MCDotArtMaker
   class IllegalBlockSizeError < StandardError ; end
 

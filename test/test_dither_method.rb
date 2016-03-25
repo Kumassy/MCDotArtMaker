@@ -1,7 +1,7 @@
 require_relative '../lib/mc_dot_art_maker'
 
 
-methods = [Magick::NoDitherMethod,Magick::RiemersmaDitherMethod,Magick::FloydSteinbergDitherMethod]
+methods = [MCDotArtMaker::NoDitherMethod,MCDotArtMaker::RiemersmaDitherMethod,MCDotArtMaker::FloydSteinbergDitherMethod]
 
 methods.each do |m|
   fn = Magick::ImageList.new("test_image.jpg").first

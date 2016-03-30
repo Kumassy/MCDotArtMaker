@@ -1,6 +1,5 @@
 module MCDotArtMaker
-  #= マイクラドット絵のpixelにあたるもの。ブロック1つで表現する
-  class Cell
+  class Dot
     attr_reader :color
     attr_accessor :block
     def initialize(image,x,y)

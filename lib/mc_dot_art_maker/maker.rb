@@ -1,6 +1,5 @@
 module MCDotArtMaker
-  #= ドット絵を表すクラス。Cellの集合体
-  class Table
+  class Maker
     attr_reader :width, :height, :cells
     # include Enumerable
 
@@ -15,6 +14,7 @@ module MCDotArtMaker
 
       @schematic_helper = MCDotArtMaker::SchematicHelper.instance
       @schematic_helper.read File.expand_path('../seed.schematic', __FILE__)
+      @block_list = MCDotArtMaker::BlockList.instance
 
       @calculation_count = 0 # 近似ブロック計算が終わったらインクリメント
     end
@@ -80,6 +80,9 @@ module MCDotArtMaker
       load_image unless image_loaded?
       calc_nearest_block unless calculation_done?
     end
+    def reset
+      load_image
+    end
 
     def texture_image(size = TEXTURE_SIZE)
       # 近似ブロック色でのモザイク画像を返す
@@ -108,9 +111,7 @@ module MCDotArtMaker
       @schematic_helper.length  = @height
       @schematic_helper.write filename
     end
-    def image_loaded?
-      !@cells.nil?
-    end
+
     private
     def calc_nearest_block
       MCDotArtMaker.puts "Calc nearest block...."
@@ -146,7 +147,7 @@ module MCDotArtMaker
       @width = @image.columns
       @height = @image.rows
       @cells = []
-      @block_list = MCDotArtMaker::BlockList.instance
+
 
       MCDotArtMaker.puts "remapping..."
       @image = @image.remap(@block_list.to_remap_image,@dither_method)
@@ -156,12 +157,15 @@ module MCDotArtMaker
       (@width*@height).times do |i|
         x = i % @width #列番号・横方向: x
         y = i / @width #行番号・縦方向: y
-        @cells << Cell.new(@image,x,y)
+        # @cells << Cell.new(@image,x,y)
+        @cells << Dot.new(@image,x,y)
       end
       MCDotArtMaker.puts "Done!"
 
       @calculation_count = 0
     end
-
+    def image_loaded?
+      !@cells.nil?
+    end
   end
 end

@@ -3,7 +3,7 @@
 #
 
 module MCDotArtMaker
-  DEFAULT_DOT_SIZE = 5
+  # DEFAULT_DOT_SIZE = 5
   TEXTURE_SIZE = 16
 
   DEBUG = false

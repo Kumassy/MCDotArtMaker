@@ -14,15 +14,16 @@ module MCDotArtMaker
       @texture = tx.resize(TEXTURE_SIZE,TEXTURE_SIZE)
     end
     def texture(size=TEXTURE_SIZE)
+      # resize if texture size is not match
       if size != TEXTURE_SIZE
         @texture.resize(size,size)
       else
         @texture
       end
     end
-    def to_lab
-      @color.to_lab
-    end
+    # def to_lab
+    #   @color.to_lab
+    # end
     def to_rmagic_color
       # p "calc color :#{@color.r} #{@color.g} #{@color.b}"
       Magick::Pixel.new(@color.r*257, @color.g*257, @color.b*257)

@@ -77,7 +77,7 @@ module MCDotArtMaker
       @modified = true
     end
     def write(name)
-      raise(IllegalBlockSizeError,"Blocks or Data size doesn't match length*width*height") unless verify
+      raise(IllegalBlockSizeError,"Blocks or Data size doesn't match length*width*height: Block size #{@blocks.size}, width #{@width}, height #{@height}, length #{@length}") unless verify
 
       @tag.find_tag("Blocks").payload = to_nbt_block
       @tag.find_tag("Data").payload = to_nbt_data

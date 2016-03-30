@@ -6,6 +6,6 @@ methods = [MCDotArtMaker::NoDitherMethod,MCDotArtMaker::RiemersmaDitherMethod,MC
 methods.each do |m|
   fn = Magick::ImageList.new("test_image.jpg").first
 
-  table = MCDotArtMaker::Table.new(fn,m)
-  table.texture_image.write "test_image_#{m}.png"
+  maker = MCDotArtMaker::Maker.new(fn,m)
+  maker.texture_image.write "test_image_#{m}.png"
 end

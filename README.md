@@ -14,7 +14,7 @@ See examples.
 First, load image files.
 `maker = MCDotArtMaker::Maker.new("test_image.jpg")`  
 You can resize images like this: `maker.resize_to_fit(50,50)`  
-This means width/height of output image will be less than 50 blocks.
+This means width/height of output image will be smaller than 50 blocks.
 
 Run this command to write dot-art: `maker.texture_image.write "test_image_texture.png"`  
 Also you can write dot-art without using Minecraft textures: `maker.mosaic_image.write "test_image_mosaic.png"`

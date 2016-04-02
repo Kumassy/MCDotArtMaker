@@ -316,7 +316,7 @@ module MCDotArtMaker
       #
       # block :redstone_ore, '73', 'redstone_ore.png'
       #
-          block :snow, '78', 'snow.png'
+      # block :snow, '78', 'snow.png'
       block :ice, '79', 'ice.png'
       #
           block :clay, '82', 'clay.png'

@@ -1,6 +1,6 @@
 module MCDotArtMaker
   class Maker
-    attr_reader :width, :height, :cells
+    attr_reader :width, :height, :cells, :image
     # include Enumerable
 
     def initialize(filename,dither_method = RiemersmaDitherMethod)
@@ -20,6 +20,9 @@ module MCDotArtMaker
     end
     def resize_to_fit(width, height)
       @image = @image.resize_to_fit(width, height)
+
+      # reset
+      @cells = nil
     end
     def [](row,col)
       load_image unless image_loaded?

@@ -471,8 +471,8 @@ module MCDotArtMaker
       MCDotArtMaker.puts "Block #{name} registered: #{color}"
     end
 
-    def calc_average_color(arg)
-      pixels = arg.get_pixels(0,0,arg.columns,arg.rows)
+    def calc_average_color(image)
+      pixels = image.get_pixels(0,0,image.columns,image.rows)
 
       sum_r = pixels.reduce(0) do |a,elem|
         a+elem.red/257

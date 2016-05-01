@@ -6,11 +6,11 @@ module MCDotArtMaker
     # - data - data e.g. 1
     # - texture - ブロックのテクスチャ
     # - color - テクスチャの平均色
-    def initialize(n,i,d,r,g,b,tx)
+    def initialize(n,i,d,color,tx)
       @name = n
       @id = i
       @data = d
-      @color = Color::RGB.new(r, g, b)
+      @color = color
       @texture = tx.resize(TEXTURE_SIZE,TEXTURE_SIZE)
     end
     def texture(size=TEXTURE_SIZE)

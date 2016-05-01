@@ -153,7 +153,7 @@ module MCDotArtMaker
 
 
       MCDotArtMaker.puts "remapping..."
-      @image = @image.remap(@block_list.to_remap_image,@dither_method)
+      @image = @image.remap(@block_list.color_palette,@dither_method)
       MCDotArtMaker.puts "Done!"
 
       MCDotArtMaker.puts "Registering cells..."

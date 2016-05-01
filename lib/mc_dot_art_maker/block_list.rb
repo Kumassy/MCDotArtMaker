@@ -3,6 +3,7 @@ module MCDotArtMaker
     include Enumerable
     include Singleton
     def initialize
+      @loader = MCDotArtMaker::TextureLoader.new
       @blocks = []
 
       # できるだけ多くのブロックを使ったバージョン
@@ -446,7 +447,7 @@ module MCDotArtMaker
       end
     end
 
-    def to_remap_image
+    def color_palette
       # Make color palette
       new_image = Magick::Image.new(@blocks.size,1){ self.background_color = "white" }
       @blocks.each_with_index do |block,index|
@@ -458,14 +459,37 @@ module MCDotArtMaker
     private
     def block(name, id_data_label, filename)
       # Add blocks to @blocks
-      image = Magick::ImageList.new(File.expand_path("../textures/#{filename}", __FILE__)).first
-      r,g,b = MCDotArtMaker.calc_average_color(image)
+      # image = Magick::ImageList.new(File.expand_path("../textures/#{filename}", __FILE__)).first
+      image = @loader.load_texture(filename)
+
+      color = calc_average_color(image)
       id = id_data_label.split(':')[0].to_i
       data = id_data_label.split(':')[1].to_i
 
-      block = Block.new(name,id, data,r,g,b, image)
+      block = Block.new(name,id, data,color, image)
       @blocks << block
-      MCDotArtMaker.puts "Block #{name} registered. R:#{r} G:#{g} B:#{b}"
+      MCDotArtMaker.puts "Block #{name} registered: #{color}"
+    end
+
+    def calc_average_color(arg)
+      pixels = arg.get_pixels(0,0,arg.columns,arg.rows)
+
+      sum_r = pixels.reduce(0) do |a,elem|
+        a+elem.red/257
+      end
+      ave_r = sum_r/pixels.size
+
+      sum_g = pixels.reduce(0) do |a,elem|
+        a+elem.green/257
+      end
+      ave_g = sum_g/pixels.size
+
+      sum_b = pixels.reduce(0) do |a,elem|
+        a+elem.blue/257
+      end
+      ave_b = sum_b/pixels.size
+
+      Color::RGB.new(ave_r, ave_g, ave_b)
     end
   end
 end

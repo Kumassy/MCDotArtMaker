@@ -1,11 +1,29 @@
 require_relative '../lib/mc_dot_art_maker'
+require 'test/unit'
+require "digest/md5"
 
 
-methods = [MCDotArtMaker::NoDitherMethod,MCDotArtMaker::RiemersmaDitherMethod,MCDotArtMaker::FloydSteinbergDitherMethod]
+class BlockPaletteTest < Test::Unit::TestCase
+  TMP_DIR = "images/tmp"
+  METHODS = [MCDotArtMaker::NoDitherMethod,MCDotArtMaker::RiemersmaDitherMethod,MCDotArtMaker::FloydSteinbergDitherMethod]
 
-methods.each do |m|
-  fn = Magick::ImageList.new("test_image.jpg").first
+  class << self
+    def startup
+      FileUtils.rm_r TMP_DIR
+      Dir.mkdir(TMP_DIR) unless Dir.exist?(TMP_DIR)
+    end
+  end
+  def setup
+    METHODS.each do |m|
+      maker = MCDotArtMaker::Maker.new("images/src/test_image.jpg",m)
+      maker.texture_image.write "images/tmp/dither_methods_#{m}.png"
+    end
+  end
 
-  maker = MCDotArtMaker::Maker.new(fn,m)
-  maker.texture_image.write "test_image_#{m}.png"
+  def test_dither_methods
+    METHODS.each do |m|
+      assert_equal(Digest::MD5.file("images/sample/dither_methods_#{m}.png"),
+        Digest::MD5.file("images/tmp/dither_methods_#{m}.png"))
+    end
+  end
 end

@@ -4,7 +4,7 @@ require "digest/md5"
 
 
 class BlockPaletteTest < Test::Unit::TestCase
-  TMP_DIR = "images/tmp"
+  TMP_DIR = "test/images/tmp"
   METHODS = [MCDotArtMaker::NoDitherMethod,MCDotArtMaker::RiemersmaDitherMethod,MCDotArtMaker::FloydSteinbergDitherMethod]
 
   class << self
@@ -15,15 +15,15 @@ class BlockPaletteTest < Test::Unit::TestCase
   end
   def setup
     METHODS.each do |m|
-      maker = MCDotArtMaker::Maker.new("images/src/test_image.jpg",m)
-      maker.texture_image.write "images/tmp/dither_methods_#{m}.png"
+      maker = MCDotArtMaker::Maker.new("test/images/src/test_image.jpg",m)
+      maker.texture_image.write "test/images/tmp/dither_methods_#{m}.png"
     end
   end
 
   def test_dither_methods
     METHODS.each do |m|
-      assert_equal(Digest::MD5.file("images/sample/dither_methods_#{m}.png"),
-        Digest::MD5.file("images/tmp/dither_methods_#{m}.png"))
+      assert_equal(Digest::MD5.file("test/images/sample/dither_methods_#{m}.png"),
+        Digest::MD5.file("test/images/tmp/dither_methods_#{m}.png"))
     end
   end
 end

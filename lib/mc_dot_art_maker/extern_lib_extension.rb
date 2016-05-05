@@ -1,6 +1,17 @@
 #
 # Add some features to extern gem.
 #
+module Magick
+  class Image
+    def get_color_rgb_at(x, y)
+      pixel = self.pixel_color(x,y)
+      r = pixel.red / 257
+      g = pixel.green / 257
+      b = pixel.blue / 257
+      ::Color::RGB.new(r, g, b)
+    end
+  end
+end
 
 module Color
   class RGB

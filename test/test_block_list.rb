@@ -24,4 +24,12 @@ class BlockListTest < Test::Unit::TestCase
       assert_equal(16, block.texture.columns)
     end
   end
+
+  def test_color_palette
+    @block_list.color_palette.write("test/images/tmp/palette.png")
+
+    assert_equal(Magick::Image, @block_list.color_palette.class)
+    assert_equal(Digest::MD5.file("test/images/sample/palette.png"),
+      Digest::MD5.file("test/images/tmp/palette.png"))
+  end
 end

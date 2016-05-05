@@ -1,8 +1,16 @@
 require_relative '../lib/mc_dot_art_maker'
 require 'test/unit'
 
+module MCDotArtMaker
+  class TextureLoader
+    public :os
+    public :search_dir
+    public :jars
+  end
+end
+
 class TextureLoaderTest < Test::Unit::TestCase
-  TMP_DIR = "images/tmp"
+  TMP_DIR = "test/images/tmp"
   class << self
     def startup
       # FileUtils.rm_r TMP_DIR

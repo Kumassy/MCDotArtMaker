@@ -7,7 +7,7 @@ module MCDotArtMaker
   class TextureLoader
     TEXTURE_DIR = File.join(File.dirname(__FILE__),"textures")
     TEXTURE_TMP_DIR = File.join(TEXTURE_DIR,"tmp")
-    
+
     def initialize(jar = nil)
       @jar = jar || jars.last
     end
@@ -32,13 +32,6 @@ module MCDotArtMaker
 
         Zip::File.open(jar_file_path) do |zip|
           zip.each do |entry|
-            # puts "entry #{entry.to_s}"
-
-            # if md = /\Aassets\/minecraft\/textures\/blocks\/(.*).png\Z/.match(entry.to_s)
-            #   # p md[1]
-            #   entry.extract(File.join("textures", md[1]) + ".png")
-            # end
-
             if md = /\Aassets\/minecraft\/textures\/blocks\/#{filename}\Z/.match(entry.to_s)
               entry.extract(File.join(TEXTURE_DIR, filename))
               return Magick::ImageList.new(File.join(TEXTURE_DIR,filename)).first
@@ -61,7 +54,7 @@ module MCDotArtMaker
     end
 
 
-    # private
+    private
     def os
       @os ||= (
       host_os = RbConfig::CONFIG['host_os']

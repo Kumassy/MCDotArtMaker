@@ -1,105 +1,74 @@
 module MCDotArtMaker
-  class Maker
-    attr_reader :width, :height, :cells, :image
-    # include Enumerable
+  class CannotModifyImageError < StandardError; end
 
-    def initialize(filename,dither_method = RiemersmaDitherMethod)
-      # モザイクにしたい元画像をセット
-      if filename.instance_of? String
-        @image = Magick::ImageList.new(filename).first
-      elsif filename.instance_of? Magick::Image
-        @image = filename
-      end
+  class Maker
+    attr_reader :width, :height, :dots, :image
+
+    def initialize(filename_or_image,dither_method = RiemersmaDitherMethod)
+      @image =
+        case filename_or_image
+        when String
+          Magick::ImageList.new(filename_or_image).first
+        when Magick::Image
+          filename_or_image
+        end
       @dither_method = dither_method
 
-      @schematic_helper = MCDotArtMaker::SchematicHelper.instance
-      @schematic_helper.read File.expand_path('../seed.schematic', __FILE__)
+      @schematic_helper = MCDotArtMaker::SchematicHelper.new
+      @schematic_helper.read(File.expand_path('../seed.schematic', __FILE__))
       @block_list = MCDotArtMaker::BlockList.instance
 
       @calculation_count = 0 # 近似ブロック計算が終わったらインクリメント
-    end
-    def resize_to_fit(width, height)
-      @image = @image.resize_to_fit(width, height)
+      @is_locked = false
 
-      # reset
-      @cells = nil
+      MCDotArtMaker::Dot.set_color_palette(@block_list)
     end
-    def [](row,col)
-      load_image unless image_loaded?
-      @cells[row*@width + col]
+    # def resize_to_fit(width, height)
+    #   check_not_locked
+    #   # @image = @image.resize_to_fit(width, height)
+    #   @image.resize_to_fit!(width, height)
+    # end
+
+    def manipulate
+      check_not_locked
+      image = yield @image
+      raise(ArgumentError,"Should return Magick::Image object") unless image.class == Magick::Image
+      @image = image
     end
-    def []=(row,col,newValue)
-      load_image unless image_loaded?
-      @cells[row*@width + col] = newValue
+
+    def calculate
+      # load_image unless image_loaded?
+      load_image unless image_locked?
+      calc_nearest_block unless calculation_done?
+      lock_image
     end
-    def each(size = 1)
-      load_image unless image_loaded?
-      @cells.each_with_index do |c,i|
-        x = (i % @width) * size #列番号・横方向: x
-        y = (i/@width) * size #行番号・縦方向: y
-        yield c,x,y
-        # cell,cellの左上のx座標 ,cellの左上のy座標
-      end
-    end
-    def each_with_index(size = 1)
-      load_image unless image_loaded?
-      @cells.each_with_index do |c,i|
-        x = (i % @width) * size #列番号・横方向: x
-        y = (i/@width) * size #行番号・縦方向: y
-        yield c,i,x,y
-        # cell,cellの左上のx座標 ,cellの左上のy座標
-      end
-    end
-    def block_ids
-      load_image unless image_loaded?
-      tmp = []
-      each do |c|
-        tmp << c.block.id
-      end
-      tmp
-    end
-    def block_data
-      load_image unless image_loaded?
-      tmp = []
-      each do |c|
-        tmp << c.block.data
-      end
-      tmp
-    end
+
     def mosaic_image(size = 1)
       # モザイク化した画像を返す
-      calculate
+      # calculate
 
       new_image = Magick::Image.new(@width*size, @height*size){ self.background_color = "white" }
-      each(size) do |c,x,y|
+
+      @dots.each do |c|
         idr = Magick::Draw.new
         idr.fill = c.block.to_rmagic_color
-        idr.rectangle(x, y, x + size, y + size)
+        idr.rectangle(c.x, c.y, c.x + size, c.y + size)
         idr.draw(new_image)
       end
       new_image
     end
-    def calculate
-      load_image unless image_loaded?
-      calc_nearest_block unless calculation_done?
-    end
-    def reset
-      load_image
-    end
-
     def texture_image(size = TEXTURE_SIZE)
       # 近似ブロック色でのモザイク画像を返す
-      calculate
+      # calculate
 
       new_image = Magick::Image.new(@width*size, @height*size){ self.background_color = "white" }
-      each(size) do |c,x,y|
-        new_image.composite!(c.block.texture(size), x, y, Magick::OverCompositeOp)
+      @dots.each do |c|
+        new_image.composite!(c.block.texture(size), c.x*size, c.y*size, Magick::OverCompositeOp)
       end
       new_image
     end
-
     def write_schematic(filename)
-      calculate
+      # calculate
 
       @schematic_helper.blocks = block_ids
       @schematic_helper.data = block_data
@@ -117,31 +86,35 @@ module MCDotArtMaker
 
     private
     def calc_nearest_block
+      # MCDotArtMaker.puts "Calc nearest block...."
+      # @nearest_color_cache ||= {}
+      #
+      # @dots.each_with_index do |cell,index|
+      #   puts "Calculating #{index+1} of #{@dots.size}" if ((index+1) % 10000 == 0)|| (index+1 == @dots.size)
+      #   if @nearest_color_cache.include?(cell.color)
+      #     cell.block = @nearest_color_cache[cell.color]
+      #   else
+      #     @nearest_color_cache[cell.color] = cell.determine_block(@block_list)
+      #
+      #     MCDotArtMaker.puts "Cashed new color #{@nearest_color_cache.size} of #{@block_list.size}"
+      #   end
+      #   @calculation_count += 1
+      # end
+      # MCDotArtMaker.puts "Done!"
+
+
+
       MCDotArtMaker.puts "Calc nearest block...."
-      @nearest_color_cash ||= {}
 
-      each_with_index do |cell,index|
-        puts "Calculating #{index+1} of #{@cells.size}" if ((index+1) % 10000 == 0)|| (index+1 == @cells.size)
-        if @nearest_color_cash.include?(cell.color)
-          cell.block = @nearest_color_cash[cell.color]
-        else
-          comparitor = cell.comparitor
-          block_distance_list = {}
-          @block_list.each do |block|
-            block_distance_list[block] = comparitor.compare(block.color)
-          end
-          nearest_block = block_distance_list.min{ |x, y| x[1] <=> y[1] }[0]  #[0]: key   [1]: value
-          @nearest_color_cash[cell.color] = nearest_block
-          cell.block = nearest_block
-
-          MCDotArtMaker.puts "Cashed new color #{@nearest_color_cash.size} of #{@block_list.size}"
-        end
+      @dots.each_with_index do |dot,index|
+        puts "Calculating #{index+1} of #{@dots.size}" if ((index+1) % 10000 == 0)|| (index+1 == @dots.size)
+        dot.determine_block
         @calculation_count += 1
       end
       MCDotArtMaker.puts "Done!"
     end
     def calculation_done?
-      @cells.size == @calculation_count
+      @dots.size == @calculation_count
     end
     def load_image
       # - width - 絵の横方向の大きさ
@@ -149,26 +122,74 @@ module MCDotArtMaker
       # 端っこは切り捨てる
       @width = @image.columns
       @height = @image.rows
-      @cells = []
+      @dots = []
 
 
       MCDotArtMaker.puts "remapping..."
       @image = @image.remap(@block_list.color_palette,@dither_method)
       MCDotArtMaker.puts "Done!"
 
-      MCDotArtMaker.puts "Registering cells..."
+      MCDotArtMaker.puts "Registering dots..."
       (@width*@height).times do |i|
         x = i % @width #列番号・横方向: x
         y = i / @width #行番号・縦方向: y
-        # @cells << Cell.new(@image,x,y)
-        @cells << Dot.new(@image,x,y)
+        @dots << Dot.new(@image.get_color_rgb_at(x,y),x,y)
       end
       MCDotArtMaker.puts "Done!"
 
       @calculation_count = 0
     end
-    def image_loaded?
-      !@cells.nil?
+    # def image_loaded?
+    #   !@dots.nil?
+    # end
+
+    def block_ids
+      # calculate
+
+      @dots.reduce([]) do |list, cell|
+        list << cell.block.id
+      end
     end
+    def block_data
+      # calculate
+
+      @dots.reduce([]) do |list, cell|
+        list << cell.block.data
+      end
+    end
+    def check_not_locked
+      raise(CannotModifyImageError,"You cannot modifiy the image after calculation.") if @is_locked
+    end
+    def lock_image
+      @is_locked = true
+    end
+    def image_locked?
+      @is_locked
+    end
+
+    class << self
+      def calculate_before(*_methods)
+        methods = Array(_methods)
+        methods.each do |method|
+          alias_method("#{method}_without_calculation",method)
+          define_method(method) do |*args|
+            calculate
+            self.send("#{method}_without_calculation",*args)
+          end
+        end
+      end
+
+      def generate_rmagick_delegation_methods(*_methods)
+        methods = Array(_methods)
+        methods.each do |method|
+          define_method(method) do |*args|
+            check_not_locked
+            @image.send("#{method}!",*args)
+          end
+        end
+      end
+    end
+    calculate_before :mosaic_image, :texture_image, :write_schematic, :block_ids, :block_data
+    generate_rmagick_delegation_methods :resize_to_fit, :resize_to_fill
   end
 end

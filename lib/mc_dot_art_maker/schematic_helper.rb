@@ -4,7 +4,7 @@ module MCDotArtMaker
   #= .schematicを処理するためのクラス
   # nbt_utilsをラップして書き込み機能を追加する
   class SchematicHelper
-    include Singleton
+    # include Singleton
     attr_reader :blocks,:data
     attr_reader :weOffsetX,:weOffsetY,:weOffsetZ
     attr_reader :weOriginX,:weOriginY,:weOriginZ

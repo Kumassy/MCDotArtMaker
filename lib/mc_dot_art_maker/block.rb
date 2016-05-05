@@ -21,21 +21,18 @@ module MCDotArtMaker
         @texture
       end
     end
-    # def to_lab
-    #   @color.to_lab
-    # end
+
     def to_rmagic_color
-      # p "calc color :#{@color.r} #{@color.g} #{@color.b}"
       Magick::Pixel.new(@color.r*257, @color.g*257, @color.b*257)
     end
 
     def hash
       code = 17
-      code = 37*code + @name.hash
-      code = 37*code + @id.hash
-      code = 37*code + @data.hash
-      code = 37*code + @texture.hash
-      code = 37*code + @color.hash
+      code = 37 * code + @name.hash
+      code = 37 * code + @id.hash
+      code = 37 * code + @data.hash
+      code = 37 * code + @texture.hash
+      code = 37 * code + @color.hash
       code
     end
     def eql?(other)

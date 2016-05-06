@@ -1,9 +1,9 @@
 module MCDotArtMaker
   class BlockList
     include Enumerable
-    include Singleton
-    def initialize
-      @loader = MCDotArtMaker::TextureLoader.new
+    # include Singleton
+    def initialize(jar_path = nil)
+      @loader = MCDotArtMaker::TextureLoader.new(jar_path)
       @blocks = []
 
       # できるだけ多くのブロックを使ったバージョン

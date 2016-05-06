@@ -3,15 +3,15 @@ require 'test/unit'
 
 class BlockListTest < Test::Unit::TestCase
   def setup
-    @block_list = MCDotArtMaker::BlockList.instance
+    @block_list = MCDotArtMaker::BlockList.new
   end
 
-  def test_singleton
-    assert_raise(NoMethodError){
-      MCDotArtMaker::BlockList.new
-    }
-    assert_equal(MCDotArtMaker::BlockList,@block_list.class)
-  end
+  # def test_singleton
+  #   assert_raise(NoMethodError){
+  #     MCDotArtMaker::BlockList.new
+  #   }
+  #   assert_equal(MCDotArtMaker::BlockList,@block_list.class)
+  # end
 
   def test_block_list
     assert_equal(58, @block_list.size)

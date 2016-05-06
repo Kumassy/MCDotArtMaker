@@ -4,7 +4,7 @@ module MCDotArtMaker
   class Maker
     attr_reader :width, :height, :dots, :image
 
-    def initialize(filename_or_image,dither_method = RiemersmaDitherMethod)
+    def initialize(filename_or_image,dither_method: RiemersmaDitherMethod, jar_path: nil)
       @image =
         case filename_or_image
         when String
@@ -16,9 +16,10 @@ module MCDotArtMaker
 
       @schematic_helper = MCDotArtMaker::SchematicHelper.new
       @schematic_helper.read(File.expand_path('../seed.schematic', __FILE__))
-      @block_list = MCDotArtMaker::BlockList.instance
+      # @block_list = MCDotArtMaker::BlockList.instance
+      @block_list = MCDotArtMaker::BlockList.new(jar_path)
 
-      @calculation_count = 0 # 近似ブロック計算が終わったらインクリメント
+      @calculation_count = 0
       @is_locked = false
 
       MCDotArtMaker::Dot.set_color_palette(@block_list)
@@ -32,7 +33,7 @@ module MCDotArtMaker
     def manipulate
       check_not_locked
       image = yield @image
-      raise(ArgumentError,"Should return Magick::Image object") unless image.class == Magick::Image
+      raise(ArgumentError, "Should return Magick::Image object") unless image.class == Magick::Image
       @image = image
     end
 

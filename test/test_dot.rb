@@ -3,7 +3,7 @@ require 'test/unit'
 
 class DotTest < Test::Unit::TestCase
   def setup
-    @block_list = MCDotArtMaker::BlockList.instance
+    @block_list = MCDotArtMaker::BlockList.new
     MCDotArtMaker::Dot.set_color_palette(@block_list)
   end
 

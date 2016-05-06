@@ -15,7 +15,7 @@ class BlockPaletteTest < Test::Unit::TestCase
   end
   def setup
     METHODS.each do |m|
-      maker = MCDotArtMaker::Maker.new("test/images/src/test_image.jpg",m)
+      maker = MCDotArtMaker::Maker.new("test/images/src/test_image.jpg",dither_method: m)
       maker.texture_image.write "test/images/tmp/dither_methods_#{m}.png"
     end
   end

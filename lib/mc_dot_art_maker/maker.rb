@@ -191,6 +191,6 @@ module MCDotArtMaker
       end
     end
     calculate_before :mosaic_image, :texture_image, :write_schematic, :block_ids, :block_data
-    generate_rmagick_delegation_methods :resize_to_fit, :resize_to_fill
+    generate_rmagick_delegation_methods :resize_to_fit, :resize_to_fill, :resize_to_limit
   end
 end

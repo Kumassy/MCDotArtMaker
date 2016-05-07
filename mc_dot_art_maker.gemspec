@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = 'mc_dot_art_maker'
-	s.version = '0.4.1'
+	s.version = '0.4.2'
 	s.licenses = ['MIT']
 	s.summary = 'Dot Art Maker for Minecraft'
 	s.description = 'Converting images to mosaic arts using Minecraft textures and .schematic files.'

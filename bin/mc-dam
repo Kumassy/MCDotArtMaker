@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+require 'optparse'
+require 'mc_dot_art_maker'
+
+
+module MCDotArtMaker
+  input = nil
+  type = nil
+  filename = nil
+
+  OptionParser.new do |opt|
+    opt.banner = "Usage: mc-dam <input> [options]"
+    opt.separator "options are:"
+    opt.on('-h', '--help', "Show help") do
+      puts opt
+      exit
+    end
+    opt.on('-t type', "Type to convert [normal | texture | schematic]") do |v|
+      type = v
+
+      unless ["normal", "texture", "schematic"].include? type
+        puts "Invalid type"
+        exit
+      end
+    end
+    opt.on('-o output', "Write output to <file>") do |v|
+      filename = v
+      if filename.nil? || filename == ""
+        puts "Invalid filename"
+        exit
+      end
+    end
+    opt.on('-i input', "Input image") do |v|
+      input = v
+      if input.nil? || input == ""
+        puts "Invalid filename"
+        exit
+      end
+    end
+    opt.parse!(ARGV)
+  end
+
+
+  maker = Maker.new(input)
+  maker.resize_to_limit(500,500)
+
+  case type
+  when "normal"
+    maker.mosaic_image.write "#{filename}.png"
+  when "texture"
+    maker.texture_image.write "#{filename}.png"
+  when "schematic"
+    maker.write_schematic "#{filename}.schematic"
+  end
+end

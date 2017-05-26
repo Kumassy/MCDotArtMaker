@@ -30,7 +30,7 @@ module MCDotArtMaker
         jar_file_path = File.join(TEXTURE_TMP_DIR,jar_basename)
         FileUtils.cp(@jar,jar_file_path) if Dir.glob(File.join(TEXTURE_TMP_DIR,'*.jar')).empty?
 
-        Zip::File.open(jar_file_path) do |zip|
+        Zip::ZipFile.open(jar_file_path) do |zip|
           zip.each do |entry|
             if md = /\Aassets\/minecraft\/textures\/blocks\/#{filename}\Z/.match(entry.to_s)
               entry.extract(File.join(TEXTURE_DIR, filename))

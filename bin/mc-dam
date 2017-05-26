@@ -16,7 +16,7 @@ module MCDotArtMaker
       puts opt
       exit
     end
-    opt.on('-t type', "Type to convert [normal | texture | schematic]") do |v|
+    opt.on('-t type', "Conversion Type [normal | texture | schematic]") do |v|
       type = v
 
       unless ["normal", "texture", "schematic"].include? type

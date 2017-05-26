@@ -1,20 +1,49 @@
 # MCDotArtMaker
-This gem will help you to create dot-art in Minecraft world.
+This gem converts images to dot-art in Minecraft world. You can perform these three kind of conversion.
 
-# Function
-- Converting images(.png .jpg ...) to dot-art using Minecraft texture.
-- Also you can maker .schematic files so that you can paste dot-art to Minecraft world easily.
+## source image
+![source-image](https://cloud.githubusercontent.com/assets/6278784/26498934/bf10e748-426b-11e7-9877-4d72cd7035d4.jpg)
 
-# Install
-This gem uses RMagick which requires ImageMagick. So first of all,you need to install ImageMagick.  
-Then run `gem install mc_dot_art_maker`
-# Usage
-See examples.  
+from: https://www.conoha.jp/conohadocs/blog/10747
 
-First, load image files.
-`maker = MCDotArtMaker::Maker.new("test_image.jpg")`  
-You can resize images like this: `maker.resize_to_fit(50,50)`  
-This means width/height of output image will be smaller than 50 blocks.
 
-Run this command to write dot-art: `maker.texture_image.write "test_image_texture.png"`  
-Also you can write dot-art without using Minecraft textures: `maker.mosaic_image.write "test_image_mosaic.png"`
+## normal output
+![normal](https://cloud.githubusercontent.com/assets/6278784/26498939/c31d3c74-426b-11e7-9ace-bda2f7fb7e90.png)
+
+## Minecraft texture version
+![texture](https://cloud.githubusercontent.com/assets/6278784/26498947/c94c8b54-426b-11e7-8fbe-f485342cde7d.png)
+
+detail:  
+![texture-detail](https://cloud.githubusercontent.com/assets/6278784/26498956/d0e61b50-426b-11e7-9b5b-bd37c4726d0f.png)
+
+## `.schematic`
+You can 'paste' the dot-art in Minecraft by using WorldEdit or similar tools.
+
+### 1. Load the .schematic file
+![step-1](https://cloud.githubusercontent.com/assets/6278784/26498967/da49e186-426b-11e7-8724-4d12c37f5276.png)
+
+### 2. Perform `//paste` command
+![step-2](https://cloud.githubusercontent.com/assets/6278784/26498972/df02d926-426b-11e7-9f30-2c9d03754926.png)
+
+### 3. Result
+![step-3](https://cloud.githubusercontent.com/assets/6278784/26498975/e1857c4e-426b-11e7-8b78-a0504db14b91.png)
+
+
+## Installation
+This gem requires ImageMagick. You need to install ImageMagick in advance.
+
+```
+$ gem install mc_dot_art_maker
+```
+
+## Usage
+```
+$ mc-dam -i source-image.jpg -t texture -o output
+```
+
+-i: input filename  
+-t: conversion type (normal | texture | schematic)  
+-o: output filename
+
+## Lisence
+MIT

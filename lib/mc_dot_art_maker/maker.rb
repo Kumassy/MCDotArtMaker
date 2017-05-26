@@ -36,6 +36,16 @@ module MCDotArtMaker
       raise(ArgumentError, "Should return Magick::Image object") unless image.class == Magick::Image
       @image = image
     end
+    def resize_to_limit(width, height)
+      manipulate do |img|
+        geometry = Magick::Geometry.new(width, height, 0, 0, Magick::GreaterGeometry)
+        new_img = img.change_geometry(geometry) do |new_width, new_height|
+          img.resize(new_width, new_height)
+        end
+        img.destroy!
+        new_img
+      end
+    end
 
     def calculate
       # load_image unless image_loaded?
@@ -191,6 +201,6 @@ module MCDotArtMaker
       end
     end
     calculate_before :mosaic_image, :texture_image, :write_schematic, :block_ids, :block_data
-    generate_rmagick_delegation_methods :resize_to_fit, :resize_to_fill, :resize_to_limit
+    generate_rmagick_delegation_methods :resize_to_fit, :resize_to_fill
   end
 end

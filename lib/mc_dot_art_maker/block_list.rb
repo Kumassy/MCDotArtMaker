@@ -6,8 +6,6 @@ module MCDotArtMaker
       @loader = MCDotArtMaker::TextureLoader.new(jar_path)
       @blocks = []
 
-      # できるだけ多くのブロックを使ったバージョン
-
       # block :stone, '1', 'stone.png'
       # block :granite, '1:1', 'stone_granite.png'
       # block :polished_granite, '1:2', 'stone_granite_smooth.png'
@@ -16,7 +14,7 @@ module MCDotArtMaker
       # block :andesite, '1:5', 'stone_andesite.png'
       # block :polished_andesite, '1:6', 'stone_andesite_smooth.png'
       # # block :grass, '2', ''
-      # # テクスチャがグレースケールでたぶんバイオームごとに色を変えてる
+      # @note texture color may chanege dependingon biomes.
       # block :dirt, '3', 'dirt.png'
       # block :coarse_dirt, '3:1', 'coarse_dirt.png'
       # block :podzol, '3:2', 'dirt_podzol_top.png'
@@ -36,7 +34,8 @@ module MCDotArtMaker
       # block :gold_ore, '14', 'gold_ore.png'
       # block :iron_ore, '15', 'iron_ore.png'
       # block :coal_ore, '16', 'coal_ore.png'
-      # block :oak_wood, '17', 'log_oak_top.png' # TODO: テクスチャ注意
+      # @note take notice of texture
+      # block :oak_wood, '17', 'log_oak_top.png'
       # # block :spruce_wood, '17:1', 'spruce_wood.png'
       # # block :birch_wood, '17:2', 'birch_wood.png'
       # # block :jungle_wood, '17:3', 'jungle_wood.png'
@@ -45,7 +44,7 @@ module MCDotArtMaker
       # # block :spruce_leaves, '18:1', 'spruce_leaves.png'
       # # block :birch_leaves, '18:2', 'birch_leaves.png'
       # # block :jungle_leaves, '18:3', 'jungle_leaves.png'
-      # # テクスチャがグレースケールでたぶんバイオームごとに色を変えてる
+      # @note texture color may chanege dependingon biomes.
       # block :sponge, '19', 'sponge.png'
       # block :wet_sponge, '19:1', 'sponge_wet.png'
       # block :glass, '20', 'glass.png'
@@ -213,11 +212,11 @@ module MCDotArtMaker
       # block :slime_block, '165', 'slime.png'
       #
       # # block :prismarine, '168', 'prismarine.png'
-      # # TODO: 複数フレームでアニメーションあり
+      # @note this texture may be animated
       # block :prismarine_bricks, '168:1', 'prismarine_bricks.png'
       # block :dark_prismarine, '168:2', 'prismarine_dark.png'
       # # block :sea_lantern, '169', 'sea_lantern.png'
-      # # TODO: 複数フレームでアニメーションあり
+      # @note this texture may be animated
       # block :hay_bale, '170', 'hay_block_top.png'
       #
       # block :hardened_clay, '172', 'hardened_clay.png'
@@ -231,8 +230,7 @@ module MCDotArtMaker
 
 
 
-      # http://imgur.com/a/MTv0r
-      # このカラーパレットを採用したバージョン
+      # @note used this color pallete: http://imgur.com/a/MTv0r
       # block :stone, '1', 'stone.png'
       # block :granite, '1:1', 'stone_granite.png'
       # block :polished_granite, '1:2', 'stone_granite_smooth.png'
@@ -260,7 +258,8 @@ module MCDotArtMaker
       # block :gold_ore, '14', 'gold_ore.png'
       # block :iron_ore, '15', 'iron_ore.png'
       # block :coal_ore, '16', 'coal_ore.png'
-      # block :oak_wood, '17', 'log_oak_top.png' # TODO: テクスチャ注意
+      # @note take notice of texture
+      # block :oak_wood, '17', 'log_oak_top.png'
       block :sponge, '19', 'sponge.png'
       # block :wet_sponge, '19:1', 'sponge_wet.png'
       # block :glass, '20', 'glass.png'
@@ -431,11 +430,13 @@ module MCDotArtMaker
       # block :smooth_red_sandstone, '179:2', 'red_sandstone_smooth.png'
 
     end
+    # @param [MCDotArtMaker::Block]
     def add(b)
       @blocks << b
     end
     alias_method  :<<,:add
 
+    # @return [Fixnum] size of block list
     def size
       @blocks.size
     end
@@ -447,6 +448,7 @@ module MCDotArtMaker
       end
     end
 
+    # @return [Magick::Image] color palette of block list for remapping input image
     def color_palette
       # Make color palette
       new_image = Magick::Image.new(@blocks.size,1){ self.background_color = "white" }

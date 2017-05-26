@@ -14,7 +14,7 @@ Dir::entries("src").reject{|e| e[0]=='.'}.each do |entry|
   maker = MCDotArtMaker::Maker.new("src/#{entry}")
   base = entry.split('.').first
 
-  maker.resize_to_fit(500,500)
+  maker.resize_to_limit(500,500)
   maker.texture_image.write "output/texture/#{base}.png"
   maker.mosaic_image.write "output/mosaic/#{base}.png"
   maker.write_schematic "output/schematic/#{base}.schematic"
